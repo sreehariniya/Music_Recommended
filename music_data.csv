@@ -1,5 +1,5 @@
-Song,Artist,Genre,Energy,Danceability,Acousticness,Valence
-Blinding Lights,The Weeknd,Pop,0.8,0.7,0.1,0.6
+song,artist,genre,energy,danceability,acousticness,valence
+Blinding Lights,The Weeknd,Pop,0.80,0.70,0.10,0.60
 Shape of You,Ed Sheeran,Pop,0.65,0.83,0.58,0.93
 Believer,Imagine Dragons,Rock,0.88,0.74,0.06,0.67
 Perfect,Ed Sheeran,Pop,0.45,0.6,0.7,0.4
