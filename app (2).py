@@ -1,9 +1,9 @@
-
 import streamlit as st
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 
+st.title("🎵 Personalized Music Recommendation System")
 # Page configuration
 st.set_page_config(
     page_title="Music Recommendation System",
