@@ -216,10 +216,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    '<div class="section-title">🎧 Choose Your Music</div>',
-    unsafe_allow_html=True
-)
+
 
 # Song selection
 selected_song = st.selectbox(
