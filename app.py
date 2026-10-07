@@ -4,9 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# =====================================================
-# PAGE SETTINGS
-# =====================================================
+# =========================================================
+# PAGE CONFIGURATION
+# =========================================================
 
 st.set_page_config(
     page_title="Personalized Music Recommendation",
@@ -15,15 +15,14 @@ st.set_page_config(
 )
 
 
-# =====================================================
-# CUSTOM DESIGN
-# =====================================================
+# =========================================================
+# CUSTOM CSS - BACKGROUND AND DESIGN
+# =========================================================
 
 st.markdown("""
 <style>
 
-/* ---------- BACKGROUND ---------- */
-
+/* Main background */
 .stApp {
     background:
         radial-gradient(
@@ -52,8 +51,7 @@ st.markdown("""
 }
 
 
-/* ---------- PAGE WIDTH ---------- */
-
+/* Page width */
 .block-container {
     max-width: 900px;
     padding-top: 2.5rem;
@@ -61,69 +59,61 @@ st.markdown("""
 }
 
 
-/* ---------- MUSIC ICONS ---------- */
-
+/* Music icons */
 .music-icons {
     text-align: center;
-    font-size: 50px;
-    margin-bottom: 10px;
-    letter-spacing: 15px;
+    font-size: 48px;
+    margin-bottom: 12px;
+    letter-spacing: 12px;
 }
 
 
-/* ---------- MAIN TITLE ---------- */
-
+/* Main title */
 .main-title {
     text-align: center;
     color: white;
-    font-size: 48px;
+    font-size: 46px;
     font-weight: 800;
     line-height: 1.2;
     margin-bottom: 15px;
 }
 
 
-/* ---------- SUBTITLE ---------- */
-
+/* Subtitle */
 .subtitle {
     text-align: center;
     color: #d2ccdf;
     font-size: 18px;
-    margin-bottom: 45px;
+    margin-bottom: 40px;
 }
 
 
-/* ---------- SECTION TITLE ---------- */
-
+/* Section headings */
 .section-title {
     color: white;
     font-size: 24px;
     font-weight: 750;
     margin-top: 25px;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
 
-/* ---------- LABELS ---------- */
-
+/* Labels */
 label {
     color: #eeeeee !important;
     font-size: 16px !important;
 }
 
 
-/* ---------- SELECT BOX ---------- */
-
+/* Select boxes */
 div[data-baseweb="select"] > div {
     background-color: rgba(255,255,255,0.09) !important;
     border: 1px solid rgba(255,255,255,0.14) !important;
     border-radius: 14px !important;
-    color: white !important;
 }
 
 
-/* ---------- BUTTON ---------- */
-
+/* Button */
 .stButton > button {
     width: 100%;
     border-radius: 14px;
@@ -150,42 +140,18 @@ div[data-baseweb="select"] > div {
 }
 
 
-/* ---------- RECOMMENDATION CARD ---------- */
-
-.recommendation-card {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.10);
+/* Recommendation cards */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 18px;
-    padding: 17px 20px;
     margin-top: 12px;
-    box-shadow:
-        0px 8px 25px rgba(0,0,0,0.18);
+    margin-bottom: 12px;
+    padding: 5px;
 }
 
 
-.song-title {
-    color: white;
-    font-size: 19px;
-    font-weight: 700;
-}
-
-
-.song-info {
-    color: #c9c1d8;
-    font-size: 15px;
-    margin-top: 4px;
-}
-
-
-.similarity {
-    color: #c59aff;
-    font-size: 14px;
-    margin-top: 7px;
-}
-
-
-/* ---------- FOOTER ---------- */
-
+/* Footer */
 .footer {
     text-align: center;
     color: #9992a9;
@@ -197,9 +163,9 @@ div[data-baseweb="select"] > div {
 """, unsafe_allow_html=True)
 
 
-# =====================================================
+# =========================================================
 # HEADER
-# =====================================================
+# =========================================================
 
 st.markdown(
     '<div class="music-icons">🎵 🎧 🎶</div>',
@@ -222,19 +188,63 @@ st.markdown(
 )
 
 
-# =====================================================
+# =========================================================
 # LOAD DATASET
-# =====================================================
+# =========================================================
 
-df = pd.read_csv("music_data.csv")
+try:
+
+    df = pd.read_csv("music_data.csv")
+
+except FileNotFoundError:
+
+    st.error(
+        "❌ music_data.csv was not found. "
+        "Please upload it to the same folder as app.py."
+    )
+
+    st.stop()
+
 
 # Clean column names
 df.columns = df.columns.str.strip().str.lower()
 
 
-# =====================================================
-# FEATURES
-# =====================================================
+# =========================================================
+# CHECK REQUIRED COLUMNS
+# =========================================================
+
+required_columns = [
+    "song",
+    "artist",
+    "genre",
+    "energy",
+    "danceability",
+    "acousticness",
+    "valence"
+]
+
+
+missing_columns = [
+    column
+    for column in required_columns
+    if column not in df.columns
+]
+
+
+if missing_columns:
+
+    st.error(
+        "❌ Missing columns in music_data.csv: "
+        + ", ".join(missing_columns)
+    )
+
+    st.stop()
+
+
+# =========================================================
+# MACHINE LEARNING FEATURES
+# =========================================================
 
 features = [
     "energy",
@@ -244,9 +254,9 @@ features = [
 ]
 
 
-# =====================================================
-# MACHINE LEARNING
-# =====================================================
+# =========================================================
+# FEATURE SCALING
+# =========================================================
 
 scaler = StandardScaler()
 
@@ -254,27 +264,36 @@ feature_matrix = scaler.fit_transform(
     df[features]
 )
 
+
+# =========================================================
+# COSINE SIMILARITY
+# =========================================================
+
 similarity_matrix = cosine_similarity(
     feature_matrix
 )
 
 
-# =====================================================
+# =========================================================
 # USER INPUT
-# =====================================================
+# =========================================================
 
 st.markdown(
-    '<div class="section-title">🎧 Choose Your Music</div>',
+    '<div class="section-title">'
+    '🎧 Choose Your Music'
+    '</div>',
     unsafe_allow_html=True
 )
 
 
+# Song selection
 selected_song = st.selectbox(
     "Select a song",
     df["song"].tolist()
 )
 
 
+# Number of recommendations
 number_of_recommendations = st.selectbox(
     "How many songs would you like?",
     [1, 2, 3, 4, 5],
@@ -282,17 +301,19 @@ number_of_recommendations = st.selectbox(
 )
 
 
-# =====================================================
-# BUTTON
-# =====================================================
+# =========================================================
+# RECOMMEND BUTTON
+# =========================================================
 
 if st.button("🎵 Recommend Songs"):
 
+    # Find selected song
     song_index = df[
         df["song"] == selected_song
     ].index[0]
 
 
+    # Get similarity scores
     similarity_scores = list(
         enumerate(
             similarity_matrix[song_index]
@@ -300,15 +321,16 @@ if st.button("🎵 Recommend Songs"):
     )
 
 
+    # Sort by similarity
     similarity_scores.sort(
         key=lambda x: x[1],
         reverse=True
     )
 
 
-    # ================================================
+    # =====================================================
     # RECOMMENDATION TITLE
-    # ================================================
+    # =====================================================
 
     st.markdown(
         '<div class="section-title">'
@@ -318,61 +340,43 @@ if st.button("🎵 Recommend Songs"):
     )
 
 
-    # ================================================
+    # =====================================================
     # DISPLAY RECOMMENDATIONS
-    # ================================================
+    # =====================================================
 
     count = 0
 
+
     for index, score in similarity_scores:
 
-        # Don't recommend selected song
+        # Don't recommend the selected song
         if index == song_index:
             continue
 
 
+        # Get song information
         song = df.iloc[index]["song"]
         artist = df.iloc[index]["artist"]
         genre = df.iloc[index]["genre"]
 
 
-        st.markdown(
-    f"""
-    <div style="
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 18px;
-        padding: 18px 22px;
-        margin: 12px 0;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.18);
-    ">
-        <div style="
-            color: white;
-            font-size: 20px;
-            font-weight: 700;
-        ">
-            🎵 {song}
-        </div>
+        # -----------------------------------------------
+        # Recommendation Card
+        # -----------------------------------------------
 
-        <div style="
-            color: #c9c1d8;
-            font-size: 15px;
-            margin-top: 5px;
-        ">
-            {artist} • {genre}
-        </div>
+        with st.container(border=True):
 
-        <div style="
-            color: #c59aff;
-            font-size: 14px;
-            margin-top: 8px;
-        ">
-            ✨ Similarity Score: {score:.2f}
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+            st.markdown(
+                f"### 🎵 {song}"
+            )
+
+            st.write(
+                f"**{artist}** • {genre}"
+            )
+
+            st.caption(
+                f"✨ Similarity Score: {score:.2f}"
+            )
 
 
         count += 1
@@ -382,9 +386,9 @@ if st.button("🎵 Recommend Songs"):
             break
 
 
-# =====================================================
+# =========================================================
 # FOOTER
-# =====================================================
+# =========================================================
 
 st.markdown(
     '<div class="footer">'
