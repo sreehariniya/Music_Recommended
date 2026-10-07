@@ -149,12 +149,7 @@ div[data-baseweb="select"] > div {
 # ---------------------------------------------------
 
 st.markdown(
-    '<div class="music-decoration">🎵 🎧 🎶</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="main-title">Personalized Music Recommendation System</div>',
+    '<div class="section-title">🎧 Choose Your Music</div>',
     unsafe_allow_html=True
 )
 
@@ -230,7 +225,7 @@ number_of_recommendations = st.selectbox(
     index=2
 )
 
-st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 # ---------------------------------------------------
@@ -257,13 +252,8 @@ if st.button("🎵 Recommend Songs"):
     )
 
     st.markdown(
-        '<div class="music-card">',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="section-title">✨ Recommended For You</div>',
-        unsafe_allow_html=True
+    '<div class="section-title">✨ Recommended For You</div>',
+    unsafe_allow_html=True
     )
 
     count = 0
@@ -298,7 +288,7 @@ if st.button("🎵 Recommend Songs"):
         if count == number_of_recommendations:
             break
 
-    st.markdown("</div>", unsafe_allow_html=True)
+   
 
 
 # ---------------------------------------------------
