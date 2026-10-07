@@ -337,25 +337,42 @@ if st.button("🎵 Recommend Songs"):
 
 
         st.markdown(
-            f"""
-            <div class="recommendation-card">
+    f"""
+    <div style="
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 18px;
+        padding: 18px 22px;
+        margin: 12px 0;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    ">
+        <div style="
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        ">
+            🎵 {song}
+        </div>
 
-                <div class="song-title">
-                    🎵 {song}
-                </div>
+        <div style="
+            color: #c9c1d8;
+            font-size: 15px;
+            margin-top: 5px;
+        ">
+            {artist} • {genre}
+        </div>
 
-                <div class="song-info">
-                    {artist} • {genre}
-                </div>
-
-                <div class="similarity">
-                    ✨ Similarity Score: {score:.2f}
-                </div>
-
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        <div style="
+            color: #c59aff;
+            font-size: 14px;
+            margin-top: 8px;
+        ">
+            ✨ Similarity Score: {score:.2f}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
         count += 1
